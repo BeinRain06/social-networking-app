@@ -33,6 +33,19 @@ And effectively in my case it was not a bug as: > MongoDB was not by default act
 
 Hopefull i come upon this great tutorial of **Arpane Neupane** on youtube about _how to connect MongoDB with NodeJS and start Node Application_ , i follow the example an it works.
 
+- **Serialization/Deserialization**
+
+  - This topic was quite one serious for me , i got my head crashing between 1 and half weeks and 2 weeks when bumps into several error blowed by my **console appp** that i think it's relevant to take times to talk about it.
+    >
+  - **why do we need Serialization/Deserialization?**
+
+    > | mordern language need to store and work with any form of data. For instance `object data` can be stored in **JSON** or **BSON** file . Because human and programming languages doesn't yet deal in the same language we need each time we want to store data (in a file, in a memory card, in a database, ...) to do so by converting it another kind of data storable in our database for example this process is achieved by **Serialixation** . ANd when we fetch or call thes data to our browse it need to be send back to what it was originally. Thatit is **Deserialization**
+
+    > | we don't often by now **hearing** about _serialization/deserialization_ because many modern languages deal with some predefined configuration of these process to gently allow us to write code . But if you want to deal with security for your app and your users you need to know about **serialization** and **deserialization** as well as if you to know more about **back-end devlopment**
+
+- **security**
+  > | my app is an entertainment and first was made to understand some concepts of security (the 06 layers of security) , it's not strongly secure. Please indulge myself, this is my first time . I would like to improve the step of security from future app . Hope that makesense to you and let's keep doing my amaxing guys. Thanks You!
+
 ## CSS Structures:
 
 > - <App/> main component connect to node handle all the javascript need to display all our **related webpages** ,
@@ -44,7 +57,13 @@ Hopefull i come upon this great tutorial of **Arpane Neupane** on youtube about 
 
 ---
 
-![./Desktop-ToDoList-App.png](./Desktop-ToDoList-App.png)
+![./Desktop-Social-Networking-App1.png](./Desktop-Social-Networking-App1.png)
+
+---
+
+---
+
+![./Desktop-Social-Networking-App2.png](./Desktop-Social-Networking-App2.png)
 
 ---
 
@@ -101,13 +120,19 @@ This website deals with node packages manager (npm) from `ǸodeJS`. We have impl
 
 ### Mobile Responsiveness
 
-    - Mobile reponsiveness for mobile max-width: 475px ,max-width: 715px,
+    - Mobile reponsiveness for mobile max-width: 320px ,max-width: 626px,
 
 **Picture**
 
 ---
 
-![./Mobile-ToDoList-App.png](./Mobile-ToDoList-App.png)
+![./Mobile-Social-Networking-App1.png](./Desktop-Social-Networking-App1.png)
+
+---
+
+---
+
+![./Mobile-Social-Networking-App2.png](./Desktop-Social-Networking-App2.png)
 
 ---
 
@@ -126,6 +151,17 @@ This website deals with node packages manager (npm) from `ǸodeJS`. We have impl
 
 - computerScience : ['https://computersciencewiki.org/index.php/Client-side_scripting_and_server-side_scripting'](https://computersciencewiki.org/index.php/Client-side_scripting_and_server-side_scripting) : helps me quickly learn about **client-side environment** (browser) and **server side environment** (web server)
 
+- StackOverflow : ['alternative to findById using passport in nodejs authentication?'](https://stackoverflow.com/questions/25614863/alternative-to-findbyid-using-passport-in-nodejs-authentication) : stackoverflow article and answers are always great i have struggled with `serializer` and `deserializer` method since Id of each _users_ of my mongoDB Document unfortunately changes after each process of serialiwation and deserialization. What makes impossible to find user by Id. Hvae to figure out another plan to do it.
+
+- makeuseof.com : ['NodeJS Google Authentication Using Passport and Express'](https://www.makeuseof.com/nodejs-google-authentication/) : it was enligthening to understand how `passport` module work in **local-strategy**, what's steps to achieves well integration of **passport** to get at redirected **urls** when our app is naturrally coded with **expressjs** module of nodejs and have some work to do fetching data in a backend-environment as our **mongoDB** database.
+
+- makeuseof.com : ['User Authentication in NodeJS Using Passport and MongoDB'](https://www.makeuseof.com/user-authentication-in-nodejs/) : this article was our guide to implement `mongoDB Model`and `passport local strategy`
+
+- DevCommunity: ['https://dev.to/ebereplenty/authentication-with-nodejs-and-mongodb-part-1-10pn'](https://dev.to/ebereplenty/authentication-with-nodejs-and-mongodb-part-1-10pn) : this article give me a hint of how to insert **mongoDB cluster** url in my _app.js_ in node securing my _cluster_ `password`.
+
+- github : ['saintedlama /
+  passport-local-mongoose '](https://github.com/saintedlama/passport-local-mongoose) : want to know further about **local-strate`** to authenticate **user access** in your app, using _passport local mongoose_ module - **santedlama** decrypt us in our repository what it is and how to process to plugin and add some cool features via **passport-local-mongoose**
+
 - passportjs.org: ['https://www.passportjs.org/'](https://www.passportjs.org/) : to implement login and logout authorization along with google oauth nd facebook oauth.
 
 - npmjs.com: ['https://www.npmjs.com/'](https://www.npmjs.com/) : to code using **ejs, express** and many others modules of **npm**.
@@ -134,9 +170,15 @@ This website deals with node packages manager (npm) from `ǸodeJS`. We have impl
 
 This project always remember the Team :
 
--Arpane Neupane: helps me figure out how to launch a **node application** with **MongoDB**
+- Arpane Neupane: helps me figure out how to launch a **node application** with **MongoDB**
+
+- saintedlama: helps us understand globally what we can intend to using `*passport local mongoose*` module of nodejs (_npmjs.com_)
 
 -Sufa Digital: udemy with his explanations about the 6 layers of security when registering or login to an app
+
+- Mary Gathoni : articles written about passport using mongoDB and NodeJS was a great reference to us to that project, can't deal with it if not enlighten by thesr ones.
+
+_Our Work always remember this team_
 
 ## Author
 
