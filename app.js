@@ -1,19 +1,22 @@
 //all required packages defines in variables ready for use
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const encrypt = require("mongoose-encryption");
 const md5 = require("md5");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const passport = require("passport");
+/* require("./passportConfig")(passport); */
 const passportLocalMongoose = require("passport-local-mongoose");
 const session = require("express-session");
+const LocalStrategy = require("passport-local");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const FacebookStrategy = require("passport-facebook").Strategy;
 const findOrCreate = require("mongoose-findorcreate");
 require("dotenv").config();
+/* const ObjectId = require("objectid");
+const assert = require("assert"); */
 
 const app = express();
 
@@ -40,25 +43,14 @@ app.use(passport.session());
 
 //connect to mongoDB here we selected **userDB** as _name_ of our database sheet , we litteraly might choose whatever _name_ you want
 
-const url =
-  "mongodb+srv://userNFirst:mongoNodeFirst@cluster0.pnlqh48.mongodb.net/?retryWrites=true&w=majority";
+// require database connection
+const dbConnect = require("./db/dbConnect");
 
-async function connect() {
-  try {
-    await mongoose.connect(url, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log("connected to MongoDB");
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-connect();
+//execute database connection
+dbConnect();
 
 //about salting (encrypt deeply users passwords)
-const saltRounds = 10;
+/* const saltRounds = 10; */
 
 // MongoDB --> Documents --> our Schema (what we decided to store)
 const userSchema = new mongoose.Schema({
@@ -68,6 +60,32 @@ const userSchema = new mongoose.Schema({
   facebookId: String,
   secret: String,
 });
+
+userSchema.pre("save", async function (next) {
+  try {
+    //check method of registration
+    const user = this;
+    if (!user.isModified("password")) next();
+    //generate salt
+    const salt = await bcrypt.genSalt(10);
+    //hash password
+    const hashedPassword = await bcrypt.hash(this.password, salt);
+    // replace plain text password with hashed password
+    this.password = hashedPassword;
+    next();
+  } catch (error) {
+    return next(error);
+  }
+});
+
+//matchPassword() method
+userSchema.methods.matchPassword = async function (password) {
+  try {
+    return await bcrypt.compare(password, this.password);
+  } catch (error) {
+    throw new Error("password not match");
+  }
+};
 
 // supply extended packages (plugin) that sharp our Schema
 userSchema.plugin(passportLocalMongoose); // It does a lot of heavy lifting for us
@@ -83,20 +101,81 @@ userSchema.plugin(encrypt, {
 const User = mongoose.model("User", userSchema);
 
 //initialize passport
-passport.use(User.createStrategy());
+/* passport.use(User.createStrategy()); */
+
+passport.use(
+  "local-signup",
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    async (email, password, done) => {
+      try {
+        //check if user exists
+        const userExists = await User.findOne({ email: email });
+        if (userExists) {
+          return done(null, false);
+        }
+        // Create a New user with the user data provided
+        const user = await User.create({ email, password });
+        return done(null, user);
+      } catch (error) {
+        done(error);
+      }
+    }
+  )
+);
+
+passport.use(
+  "local-login",
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    async (req, email, password, done) => {
+      try {
+        const user = await User.findOne({ email: email });
+        if (!user) {
+          return done(null, false, req.flash("loginMessage", "No user found."));
+        }
+        // Create a New user with the user data provided
+        const isMatch = await user.matchPassword(password);
+        if (!isMatch) {
+          return done(null, false);
+        } else {
+          //if password match return user
+          return done(null, user);
+        }
+      } catch (error) {
+        console.log(error);
+        done(error, false);
+      }
+    }
+  )
+);
 
 passport.serializeUser(function (user, done) {
-  done(null, user.id);
+  console.log("serializeUser---");
+  console.log(user.id);
+  console.log(user.username);
+  done(null, user);
 });
 
-passport.deserializeUser(function (id, done) {
+/* passport.deserializeUser(function (id, done) {
   User.findById(id, function (err, user) {
     done(err, user);
   });
+}); */
+
+passport.deserializeUser(async (user, done) => {
+  console.log("deserializing user...");
+  done(null, user);
 });
 
 //passport used technology
-passport.use(
+/* passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.CLIENT_ID,
@@ -107,6 +186,40 @@ passport.use(
       User.findOrCreate({ googleId: profile.id }, function (err, user) {
         return cb(err, user);
       });
+    }
+  )
+); */
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET,
+      callbackURL: "http://localhost:3000/auth/google/secrets",
+    },
+    async (request, accessToken, refreshToken, profile, done) => {
+      try {
+        let existingUser = await user.findOne({ "google.id": profile.id });
+
+        if (existingUser) {
+          return done(null, existingUser);
+        }
+
+        console.log("Creating new user...");
+        const newUser = new User({
+          method: "google",
+          google: {
+            id: profile.id,
+            name: profile.displayName,
+            email: profile.emails[0].value,
+          },
+        });
+
+        await newUser.save();
+        return done(null, newUser);
+      } catch (error) {
+        return done(error, false);
+      }
     }
   )
 );
@@ -129,7 +242,7 @@ passport.use(
 //app authentification
 app.get(
   "/auth/google",
-  passport.authenticate("google", { scope: ["profile"] })
+  passport.authenticate("google", { scope: ["email", "profile"] })
 );
 
 app.get(
@@ -177,29 +290,28 @@ app.get("/register", function (req, res) {
   });
 }); */
 
-app.get("/secrets", function (req, res) {
-  async function execute() {
-    try {
-      const data = await User.find({ secret: { $ne: null } });
-      if (data) {
-        res.render("secrets", { usersWithSecrets: foundUsers });
-      }
-    } catch (error) {
-      console.log(error);
+app.get("/secrets", async (req, res) => {
+  try {
+    const user = await User.find({ secret: { $ne: null } });
+    if (!user) {
+      throw new Error("User in secrets webpage not found");
     }
+    console.log(user);
+    res.render("secrets", { usersWithSecrets: user });
+  } catch (error) {
+    console.log(error);
   }
-  execute();
 });
 
 app.get("/submit", function (req, res) {
   if (req.isAuthenticated()) {
     res.render("submit");
   } else {
-    res.render("/login");
+    res.render("login");
   }
 });
 
-app.post("/submit", function (req, res) {
+/* app.post("/submit", function (req, res) {
   const submittedSecret = req.body.secret;
   User.findById(req.user.id, function (err, foundUser) {
     if (err) {
@@ -213,12 +325,58 @@ app.post("/submit", function (req, res) {
       }
     }
   });
+}); */
+
+/* app.post("/submit", async (req, res) => {
+  try {
+    const submittedSecret = req.body.secret;
+    // const user = await User.findById(req.user.id);
+    const user= null;
+    if (!user) {
+      throw new Error("submitted secret missing");
+    }
+    console.log(user);
+    user.secret = submittedSecret;
+    user.save(function () {
+      res.redirect("/secrets");
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}); */
+
+app.post("/submit", async (req, res) => {
+  try {
+    const submittedSecret = req.body.secret;
+    const user = await User.findOne({ username: req.user.username });
+    if (!user) {
+      throw new Error("submitted secret missing");
+    }
+    console.log(user);
+    user.secret = submittedSecret;
+    /* user.save(function () {
+      res.redirect("/secrets");
+    }); */
+    /*   user.save.then(() => {
+      res.redirect("/secrets");
+    }); */
+    const redirection = () => {
+      res.redirect("/secrets");
+    };
+    const savedFunction = await redirection();
+    user.save(savedFunction);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.get("/logout", function (req, res) {
-  req.logout(); // deletes the cookie
-  res.redirect("/");
+  req.logout(() => res.redirect("/")); // deletes the cookie
 });
+
+/* app.get("/logout", function (req, res) {
+  req.logout(() => res.redirect("/")); // deletes the cookie
+}); */
 
 //app "POST" requests
 app.post("/register", function (req, res) {
@@ -245,13 +403,15 @@ app.post("/login", function (req, res) {
     username: req.body.username,
     password: req.body.password,
   });
-
+  console.log("this user id");
+  console.log(user.id);
   req.login(user, function (err) {
     if (err) {
       console.log(err);
+      console.log("error login");
     } else {
       // creating a cookie
-      passport.authenticate("local")(req, res, function () {
+      passport.authenticate("login")(req, res, function () {
         res.redirect("/secrets");
       });
     }

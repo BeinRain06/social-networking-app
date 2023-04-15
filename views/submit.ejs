@@ -1,17 +1,25 @@
-<%- incldude("partials/header") %>
-<div class="secret_response_wrapper">
-  <div class="secrets_content">
-    <i class="fas fa-key fa-6x"></i>
-    <h1 class="display-3">You've Discovered My Secret!</h1>
-  </div>
-  <% usersWithSecrets.forEach(function(user){%>
-  <p class="lovely_secret"><%=user.secret%></p>
-  <% }); %>
-
-  <hr />
-  <div class="your_turn">
-    <a href="/logout" class="btn btn_light" role="button">Log Out</a>
-    <a href="/logout" class="btn btn_dark" role="button">Submit a Secret</a>
+<%- include('partials/header') %>
+<div class="social_wrapper">
+  <div class="social_content social_ct2">
+    <div class="ready">
+      <i class="fas fa-key fa-4x"></i>
+      <h2 class="showcase_title">Secrets</h2>
+    </div>
+    <p class="now_you">Your Secrets !, share them anonymously</p>
+    <form action="/submit" class="field_info" method="POST">
+      <div class="control_form ctf_secrets">
+        <label for="secret" class="inside_world">
+          <i>every growth days</i></label
+        >
+        <input
+          type="text"
+          name="secret"
+          class="content_form"
+          placeholder="what has been your secret?"
+        />
+      </div>
+      <button type="submit" class="btn btn-light">Submit</button>
+    </form>
   </div>
 </div>
-<%- incldude("partials/footer") %>
+<%- include('partials/footer') %>

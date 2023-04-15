@@ -19,17 +19,27 @@ body {
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  background: rgb(223, 218, 218);
 }
 
 .social_content {
   display: flex;
   flex-direction: column;
   width: 60%;
-  height: 280px;
   justify-content: center;
   align-items: center;
-  background-color: blue;
   margin: 0 auto;
+}
+
+.social_ct1 {
+  height: 280px;
+  background-color: blue;
+}
+
+.social_ct2 {
+  height: 340px;
+  background-color: rgb(146, 146, 146);
+  padding-bottom: 0.5rem;
 }
 
 .ready {
@@ -79,7 +89,7 @@ body {
   padding: 0.2rem 0.4rem;
 }
 
-/* login.ejs */
+/* login.ejs , register.ejs */
 
 .new_build_wrapper {
   position: relative;
@@ -132,8 +142,15 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+.ctf_log_reg {
   align-items: left;
   text-align: left;
+}
+
+.ctf_secrets {
+  align-items: center;
+  text-align: center;
 }
 
 .stick_brand {
@@ -150,4 +167,227 @@ body {
 .stick_brand .btn {
   width: 80%;
   padding: 0.35rem 0.6rem;
+}
+
+/* secrets.ejs */
+
+.field_info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.field_info .content_form {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  width: 40vw;
+  margin: 0 auto;
+  padding: 0.65rem 0;
+}
+
+.field_info .btn {
+  padding: 0.5rem 1rem;
+  margin: 1rem 0 0.5rem;
+  text-align: center;
+  font-size: 17px;
+}
+
+/* secrets.ejs */
+.secret_response_wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(10deg, rgb(81, 122, 97), rgb(218, 217, 178));
+}
+
+.secret_response_wrapper i {
+  color: rgb(255, 245, 185);
+}
+.secrets_content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.your_turn {
+  position: relative;
+  width: 500px;
+  height: 40px;
+  top: 1rem;
+  left: 1rem;
+  display: flex;
+  flex-direction: row;
+  flex-basis: 50%;
+  justify-content: flex-start;
+  gap: 0.65rem;
+}
+
+.your_turn .btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 100%;
+}
+
+.lovely {
+  position: relative;
+  top: 68%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  gap: 0.5rem;
+  width: calc(20vw);
+}
+
+.lovely_secret {
+  text-align: center;
+  color: #fff;
+  background: rgb(20, 20, 109);
+  width: calc(10vw);
+  padding: 0.5rem 0;
+}
+
+/* Media Queries */
+@media (max-width: 860px) {
+  .new_build_wrapper {
+    width: 92%;
+  }
+
+  .secrets_content .display-4 {
+    font-size: 40px;
+    font-weight: bold;
+  }
+
+  .stick_brand .btn {
+    font-size: 12px;
+  }
+
+  .lovely_secret {
+    width: calc(20vw);
+  }
+
+  .your_turn {
+    width: calc(40vw);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    top: 2rem;
+    left: 0;
+    justify-content: center;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 626px) {
+  .social_content {
+    width: 92%;
+  }
+
+  .social_ct1 {
+    height: 300px;
+    background-color: blue;
+  }
+
+  .now_you {
+    width: calc(92%);
+    letter-spacing: 0.3px;
+    font-size: 15px;
+  }
+
+  .new_build_wrapper {
+    width: 92%;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 0.85rem;
+  }
+
+  .some_user_info {
+    display: grid;
+    grid-column: 1 / span 1;
+    grid-row: 1 / span 1;
+  }
+  .choose_your_log {
+    display: grid;
+    grid-column: 1 / span 1;
+    grid-row: 2 / span 1;
+    height: 180px;
+  }
+
+  .secret_response_wrapper i {
+    color: rgb(255, 245, 185);
+    margin-bottom: 2rem;
+  }
+
+  .secrets_content .display-4 {
+    font-size: 30px;
+    font-weight: bold;
+  }
+
+  .lovely {
+    width: calc(40vw);
+  }
+  .lovely_secret {
+    width: calc(40vw);
+  }
+}
+
+@media (max-width: 360px) {
+  .button_deal {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    height: 100px;
+    padding-block: 1rem;
+  }
+
+  .button_deal .btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 40%;
+    margin: 0 auto;
+  }
+
+  .choose_your_log {
+    display: grid;
+    height: 140px;
+  }
+  .secrets_content .display-4 {
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  .secret_response_wrapper i {
+    color: rgb(255, 245, 185);
+    margin: 1rem 0 2rem;
+  }
+
+  .lovely {
+    width: calc(50vw);
+  }
+  .lovely_secret {
+    width: calc(50vw);
+  }
+
+  .your_turn {
+    width: calc(55vw);
+    height: auto;
+  }
 }
